@@ -1,0 +1,1299 @@
+{
+	"info": {
+		"name": "Open Banking - Original",
+		"_postman_id": "2809be22-998c-8ef7-31ed-6f77e8e0896b",
+		"description": "# Introduction\nWhat does your API do?\n\n# Overview\nThings that the developers should know about\n\n# Authentication\nWhat is the preferred way of using the API?\n\n# Error Codes\nWhat errors and status codes can a user expect?\n\n# Rate limit\nIs there a limit to the number of requests an user can send?",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticação",
+			"description": "",
+			"item": [
+				{
+					"name": "Login do usuário (página)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_auth_url}}/OriginalConnect?scopes=account,investiment&callback_url=http://localhost:80&callback_id=1&developer_key={{developer_key}}",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_auth_url}}"
+							],
+							"path": [
+								"OriginalConnect"
+							],
+							"query": [
+								{
+									"key": "scopes",
+									"value": "account,investiment",
+									"equals": true
+								},
+								{
+									"key": "callback_url",
+									"value": "http://localhost:80",
+									"equals": true
+								},
+								{
+									"key": "callback_id",
+									"value": "1",
+									"equals": true
+								},
+								{
+									"key": "developer_key",
+									"value": "{{developer_key}}",
+									"equals": true
+								}
+							]
+						},
+						"description": "Essa chamada deve ser utilizada para direcionar o usuário a tela de login no Banco"
+					},
+					"response": []
+				},
+				{
+					"name": "Obter access token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"uid\": {{uid}}, \n\t\"auth_code\": {{auth_code}}, \n\t\"developer_key\": {{developer_key}}, \n\t\"secret_key\": {{secret_key}}\n}"
+						},
+						"url": {
+							"raw": "https://{{sandbox_auth_url}}/OriginalConnect/AccessTokenController",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_auth_url}}"
+							],
+							"path": [
+								"OriginalConnect",
+								"AccessTokenController"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conta Corrente",
+			"description": "",
+			"item": [
+				{
+					"name": "Saldo",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/accounts/v1/balance",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"accounts",
+								"v1",
+								"balance"
+							]
+						},
+						"description": "O recurso de Saldo retorna o valor disponível em uma conta corrente no momento da chamada do recurso. Inclui também outros dois valores sendo eles o limite de crédito disponível para o cliente (cheque especial) e o total, a soma entre o dinheiro do cliente e o limite."
+					},
+					"response": []
+				},
+				{
+					"name": "Histórico de Saldos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/accounts/v1/balance-history?date_from=20170623",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"accounts",
+								"v1",
+								"balance-history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "20170623",
+									"equals": true
+								}
+							]
+						},
+						"description": "O Histórico de Saldos lista os saldos disponíveis em uma conta bancária por dia em um período entre datas. O saldo não inclui valores disponíveis com limites de cheque especial."
+					},
+					"response": []
+				},
+				{
+					"name": "Extrato",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/accounts/v1/transaction-history",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"accounts",
+								"v1",
+								"transaction-history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "20170602",
+									"equals": true,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "20170925",
+									"equals": true,
+									"disabled": true
+								}
+							]
+						},
+						"description": "O Histórico de Transações lista todas as transações ocorridas em uma conta bancária em um período entre datas. Esse recurso não exibe informações de Saldo."
+					},
+					"response": []
+				},
+				{
+					"name": "Contrato Cheque Especial",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/accounts/v1/credit-balance-agreement",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"accounts",
+								"v1",
+								"credit-balance-agreement"
+							]
+						},
+						"description": "O cheque especial funciona como um empréstimo vinculado a sua conta corrente. O recurso credit-balance-agreement apresenta o valor disponibilizado para o cliente, junto aos custos mensais e anuais. Não aprensenta o quanto já foi utilizado pelo cliente, e sim o o contrato do cheque especial. Para saber sobre o valor consumido pelo cliente, consulte o recurso balance da API accounts."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cartões",
+			"description": "",
+			"item": [
+				{
+					"name": "Lista de cartões físicos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/cards/v1",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"cards",
+								"v1"
+							]
+						},
+						"description": "O recurso Lista de cartões físicos permite listar os cartões de crédito que o cliente possui. Afim de manter o sigilo dos dados do cliente, os cartões listados apresentarão apenas os 4 últimos dígitos ao invés do número completo."
+					},
+					"response": []
+				},
+				{
+					"name": "Detalhe do cartão",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/cards/v1/0001",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"cards",
+								"v1",
+								"0001"
+							]
+						},
+						"description": "O recurso Detalhe do cartão fornece informações específicas de um cartão de crédito. É possível ver o limite do cartão, dia de pagamento da fatura, o total de crédito consumidos, dentre outras informações."
+					},
+					"response": []
+				},
+				{
+					"name": "Fatura aberta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/cards/v1/0001/invoices/open",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"cards",
+								"v1",
+								"0001",
+								"invoices",
+								"open"
+							]
+						},
+						"description": "O recurso Detalhe do cartão fornece informações específicas de um cartão de crédito. É possível ver o limite do cartão, dia de pagamento da fatura, o total de crédito consumidos, dentre outras informações."
+					},
+					"response": []
+				},
+				{
+					"name": "Fatura fechada",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/cards/v1/0001/invoices/closed",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"cards",
+								"v1",
+								"0001",
+								"invoices",
+								"closed"
+							]
+						},
+						"description": "O recurso Fatura fechada fornece os detalhes da fatura fechada de um cartão de crédito específico. É possível ver o valor total da fatura, valor mínimo ou propostas de parcelamento, dólar, taxas, data de pagamento e as transações."
+					},
+					"response": []
+				},
+				{
+					"name": "Histórico de faturas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/cards/v1/0001/invoices/history",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"cards",
+								"v1",
+								"0001",
+								"invoices",
+								"history"
+							]
+						},
+						"description": "O recurso Histórico de faturas fornece os detalhes das faturas fechadas. Por questões de privacidade serão fornecidas apenas as 3 últimas faturas fechada do cliente."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rewards",
+			"description": "",
+			"item": [
+				{
+					"name": "Saldo de programa de Pontos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/rewards/v1/balance",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"rewards",
+								"v1",
+								"balance"
+							]
+						},
+						"description": "O saldo do programa de pontos exibe o total de pontos acumulados pelo cliente."
+					},
+					"response": []
+				},
+				{
+					"name": "Extrato de programa de Pontos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/rewards/v1/transaction-history",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"rewards",
+								"v1",
+								"transaction-history"
+							]
+						},
+						"description": "O programa de pontos do original acumula pontos que se transformam em dinheiro, através do recurso /rewards-balance-history da API /rewards você poderá consultar todas as movimentações realizadas dentro do período informado, sejam elas de crédito ou débito. Um débito pode ser visto como uma operação de resgate, quando o cliente resgata seus pontos. E o crédito significa que ele recebeu pontos."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Investimentos",
+			"description": "",
+			"item": [
+				{
+					"name": "Carteira Consolidada",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/investments/v1/portfolio-summary",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"investments",
+								"v1",
+								"portfolio-summary"
+							]
+						},
+						"description": "A Carteira Consolidada de Investimentos lista o valor total de investimentos e o valor dos impostos de todos os investimentos da carteira separada pelo nome do ativo e categorizado pela classe do ativo. \n\nA composição dos investimentos em uma carteira depende de uma série de fatores, entre os mais importantes estão a tolerância ao risco, a perspectiva do investidor e o valor investido."
+					},
+					"response": []
+				},
+				{
+					"name": "Extrato de fundos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/investments/v1/funds/transaction-history?date_from=20160101&date_to=20160201",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"investments",
+								"v1",
+								"funds",
+								"transaction-history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "20160101",
+									"equals": true
+								},
+								{
+									"key": "date_to",
+									"value": "20160201",
+									"equals": true
+								}
+							]
+						},
+						"description": "O recurso Funds – Transaction History lista todas as transações que ocorrerão em fundos de investimentos relativos a uma conta bancária em um período de tempo. Este recurso retorna aplicações e resgates. Ele não irá exibir a posição atual dos investimentos."
+					},
+					"response": []
+				},
+				{
+					"name": "Extrato de renda fixa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/investments/v1/fixed-income/transaction-history?date_from=20160101&date_to=20160101",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"investments",
+								"v1",
+								"fixed-income",
+								"transaction-history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "20160101",
+									"equals": true
+								},
+								{
+									"key": "date_to",
+									"value": "20160101",
+									"equals": true
+								}
+							]
+						},
+						"description": "O recurso Fixed Income – Transaction History lista todas as transações que ocorreram em investimentos de renda fixa relativos a uma conta bancária em um período de tempo. Este recurso retorna aplicações e resgates. Ele não irá exibir a posição atual dos investimentos."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Pagamentos",
+			"description": "Docs pagamento",
+			"item": [
+				{
+					"name": "Transferência entre contas original",
+					"description": "",
+					"item": [
+						{
+							"name": "Transferência (com push)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v1/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v1",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (com push)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "798354843"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (conta sem saldo)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (conta sem saldo)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "1305414401"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (conta sem saldo) copy",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (conta sem saldo) copy",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "1305414401"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"222222\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (com Token) ",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"111111\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (com Token)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "1305414401"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\":\"111111\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (favorecido, passar id de favorecido)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"favored_id\": \"2\",\n\t\"amount\": \"10.00\",\n\t\"comments\": \"Recarga PicPay\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (favorecido, passar id de favorecido)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "2100206655"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"favored_id\": \"2\",\n\t\"amount\": \"51.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (valor maior de 300)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"favored_id\": \"2\",\n\t\"amount\": \"551.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						},
+						{
+							"name": "Transferência (conta inexistente)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"account_number\": \"401111\",\n\t\"amount\": \"551.00\",\n\t\"comments\": \"XXXXX\",\n\t\"callback_url\": \"http://localhost:80\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v2/money-transfer/between-accounts",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v2",
+										"money-transfer",
+										"between-accounts"
+									]
+								},
+								"description": "O recurso Money Transfer – Between Accounts da API de Pagamentos permite realizar transferências de valores entre contas do Banco Original. Esse recurso é composto de dois métodos: POST e PUT. \n\nA primeira chamada deverá ser realizada pelo método POST, indicando a criação da transferência. Como resposta você receberá o no campo security_request, o tipo de dispositivo de segurança necessário para concluir a transação, normalmente o número do token. Peça ao cliente que digite o número do token para confirmar a transação, dessa vez utilizando o método PUT.\n\nÉ importante destacar que os valores informados no POST e no PUT devem ser idênticos, caso haja alteração no valor ou na conta de destino, a transação será invalidada. Repare também que na segunda chamada é adicionado um novo campo no header, contendo o valor do dispositivo de segurança solicitado (normalmente, o número do token). "
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Pagamento de boleto",
+					"description": "",
+					"item": [
+						{
+							"name": "Pagamento de Boleto (cadastro de pagamento)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"payment_slip_line\": \"34198765490000007277756018123457333770025200000\",\n    \"payment_date\": \"20171202\"\n}"
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v1/payment-slip",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v1",
+										"payment-slip"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "Pagamento de Boleto (efetivação de pagamento)",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{access_token}}"
+									},
+									{
+										"key": "developer-key",
+										"value": "{{developer_key}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "security_response",
+										"value": "5676d65d7d"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"payment_slip_line\": \"39999876580000007277756018112344930630025100001\",\n    \"payment_date\": \"20171203\",\n    \"amount\": 100.00\n}\n "
+								},
+								"url": {
+									"raw": "https://{{sandbox_api_url}}/payments/v1/payment-slip",
+									"protocol": "https",
+									"host": [
+										"{{sandbox_api_url}}"
+									],
+									"path": [
+										"payments",
+										"v1",
+										"payment-slip"
+									]
+								},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		},
+		{
+			"name": "Análise de Crédito",
+			"description": "",
+			"item": [
+				{
+					"name": "Simulação de crédito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"John Doe\",\n\t\"birth_date\": 19840525,\n\t\"cpf\": 555555555556,\n\t\"income\": 10000,\n\t\"amount\": 1000,\n\t\"installments\": 6\n}"
+						},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/credit_analysis/v1/simulation",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"credit_analysis",
+								"v1",
+								"simulation"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Efetivar Solicitação de crédito",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{access_token}}"
+							},
+							{
+								"key": "developer-key",
+								"value": "{{developer_key}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"offer_id\": 3210,\n\t\"name\": \"John Doe\",\n\t\"birth_date\": 19840525,\n\t\"cpf\": 11111111111,\n\t\"phone\": \"\",\n\t\"cell_phone\": \"55 11 912341234\",\n\t\"email\": \"john.doe@email.com\",\n\t\"income\": 10000,\n\t\"amount\": 1000,\n\t\"installments\": 6\n}"
+						},
+						"url": {
+							"raw": "https://{{sandbox_api_url}}/credit_analysis/v1/credit_request",
+							"protocol": "https",
+							"host": [
+								"{{sandbox_api_url}}"
+							],
+							"path": [
+								"credit_analysis",
+								"v1",
+								"credit_request"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
