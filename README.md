@@ -137,6 +137,9 @@ consumo de APIs "Postman" (https://www.getpostman.com/)
     5. secret_key: XXX
     6. developer_key: XXX
 
+## Exemplos
+
+- [NodeJS](samples/nodejs)
 
 ## Referências
 
