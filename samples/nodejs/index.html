@@ -1,0 +1,74 @@
+<!doctype html>
+<html ng-app="openbanking">
+<head>
+    <meta charset="utf-8">
+    <title>Openbanking</title>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        pre {
+            white-space: pre-wrap;
+        }
+
+        .messages {
+            overflow-y: auto;
+            position: fixed;
+            height: 100%;
+            width: calc(66.66666% - 15px);
+        }
+    </style>
+</head>
+<body ng-controller="main">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="messages">
+                <div ng-repeat="message in messages track by $index">
+                    <pre>{{ message }}</pre>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div>
+                <button class="btn btn-primary btn-block" onclick="window.open('/oauth')">Login OAuth</button>
+                <button class="btn btn-primary btn-block" ng-click="call('balance')">Saldo</button>
+                <button class="btn btn-primary btn-block" ng-click="call('favored_accounts')">Favorecidos</button>
+                <button class="btn btn-primary btn-block" ng-click="call('tef')">TEF</button>
+                <button class="btn btn-primary btn-block" ng-click="call('tef_confirm')">TEF PUT</button>
+                <button class="btn btn-primary btn-block" ng-click="messages=[]">Limpar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    angular.module('openbanking', [])
+        .service('socket', function () {
+            return io.connect(location.protocol + '//' + location.host);
+        })
+        .controller('main', function ($scope, socket) {
+            $scope.messages = [];
+            $scope.access_token = localStorage.getItem('access_token');
+
+            socket.on('access_token', function (access_token) {
+                $scope.$apply(function () {
+                    $scope.access_token = access_token;
+                });
+            })
+
+            socket.on('message', function (message) {
+                $scope.$apply(function () {
+                    $scope.messages.unshift(...message.reverse());
+                });
+            });
+
+            $scope.call = function (resource) {
+                socket.emit('exec', 'execute_api(\'' + resource + '\')');
+            };
+        })
+
+</script>
+</body>
+</html>

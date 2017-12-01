@@ -1,0 +1,31 @@
+{
+  "name": "openbanking",
+  "version": "1.0.0",
+  "description": "OpenBanking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tpinho/OpenBanking.git"
+  },
+  "keywords": [
+    "OpenBanking",
+    "Banco",
+    "Original",
+    "Hackathon"
+  ],
+  "author": "Thiago Pinho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tpinho/OpenBanking/issues"
+  },
+  "homepage": "https://github.com/tpinho/OpenBanking#readme",
+  "dependencies": {
+    "express": "*",
+    "superagent": "*",
+    "http": "*",
+    "socket.io": "*"
+  }
+}
